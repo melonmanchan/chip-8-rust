@@ -1,4 +1,5 @@
 # Compiled files
+./src/main
 *.o
 *.so
 *.rlib
