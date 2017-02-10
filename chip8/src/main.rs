@@ -1,3 +1,31 @@
+fn setupGraphics(chip8: &mut Chip8) {
+
+}
+
+fn setupInput(chip8: &mut Chip8) {
+
+}
+
+fn initialize(chip8: &mut Chip8) {
+
+}
+
+fn loadGame(chip8: &mut Chip8) {
+
+}
+
+fn emulateCycle(chip8: &mut Chip8) {
+
+}
+
+fn drawGraphics(chip8: &mut Chip8) {
+
+}
+
+fn setKeyState(chip8: &mut Chip8) {
+
+}
+
 struct Chip8 {
     current_opcode: u16,
     // Memory of the emulator
@@ -26,6 +54,32 @@ struct Chip8 {
 }
 
 fn main() {
-    let mut chip8: Chip8;
+    let mut chip8: Chip8 = Chip8 {
+        current_opcode:  0,
+
+        memory: [0; 4096],
+
+        v: [0; 16],
+
+        index_register:  0,
+        program_counter: 0,
+
+        graphics: [0; 64 * 32],
+
+        delay_timer: 0,
+        sound_timer: 0,
+
+        stack: [0; 16],
+        stack_pointer: 0,
+
+        keys: [0; 16]
+    };
+
+    setupGraphics(&mut chip8);
+    setupInput(&mut chip8);
+
+    initialize(&mut chip8);
+    loadGame(&mut chip8);
+
     println!("Hello, world!");
 }
