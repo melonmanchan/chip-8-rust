@@ -1,28 +1,39 @@
-fn setupGraphics(chip8: &mut Chip8) {
+fn setup_graphics(chip8: &mut Chip8) {
 
 }
 
-fn setupInput(chip8: &mut Chip8) {
+fn setup_input(chip8: &mut Chip8) {
 
 }
 
-fn initialize(chip8: &mut Chip8) {
+fn load_game(chip8: &mut Chip8) {
 
 }
 
-fn loadGame(chip8: &mut Chip8) {
+fn emulate_cycle(chip8: &mut Chip8) {
+    let pc = chip8.program_counter as usize;
+
+    let current_opcode: u16 = (chip8.memory[pc] as u16) << 8 | (chip8.memory[pc + 1] as u16);
+
+
+    if chip8.delay_timer > 0 {
+        chip8.delay_timer = chip8.delay_timer - 1;
+    }
+
+    if chip8.sound_timer > 0 {
+        if chip8.sound_timer == 1 {
+            println!("BEEPS")
+        }
+
+        chip8.sound_timer = chip8.sound_timer - 1;
+    }
+}
+
+fn draw_graphics(chip8: &mut Chip8) {
 
 }
 
-fn emulateCycle(chip8: &mut Chip8) {
-
-}
-
-fn drawGraphics(chip8: &mut Chip8) {
-
-}
-
-fn setKeyState(chip8: &mut Chip8) {
+fn set_key_state(chip8: &mut Chip8) {
 
 }
 
@@ -39,7 +50,7 @@ struct Chip8 {
 
     // 64 x 32 screen of black-and-white pixels
     // Either on or off.
-    graphics: [u8; 64 * 32],
+    graphics: [[u8; 64]; 32],
 
     // Timers
     delay_timer: u8,
@@ -50,7 +61,6 @@ struct Chip8 {
 
     // Whichever keys are pressed
     keys: [u8; 16],
-
 }
 
 fn main() {
@@ -61,10 +71,10 @@ fn main() {
 
         v: [0; 16],
 
-        index_register:  0,
-        program_counter: 0,
+        index_register:  0x200,
+        program_counter: 0x200,
 
-        graphics: [0; 64 * 32],
+        graphics: [[0; 64]; 32],
 
         delay_timer: 0,
         sound_timer: 0,
@@ -75,11 +85,16 @@ fn main() {
         keys: [0; 16]
     };
 
-    setupGraphics(&mut chip8);
-    setupInput(&mut chip8);
+    setup_graphics(&mut chip8);
+    setup_input(&mut chip8);
 
-    initialize(&mut chip8);
-    loadGame(&mut chip8);
+    load_game(&mut chip8);
 
-    println!("Hello, world!");
+    loop {
+        emulate_cycle(&mut chip8);
+
+        draw_graphics(&mut chip8);
+
+        set_key_state(&mut chip8);
+    }
 }
