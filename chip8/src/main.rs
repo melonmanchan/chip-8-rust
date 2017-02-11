@@ -1,3 +1,22 @@
+const FONT_SET: [u8; 80] = [
+    0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
+    0x20, 0x60, 0x20, 0x20, 0x70, // 1
+    0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
+    0xF0, 0x10, 0xF0, 0x10, 0xF0, // 3
+    0x90, 0x90, 0xF0, 0x10, 0x10, // 4
+    0xF0, 0x80, 0xF0, 0x10, 0xF0, // 5
+    0xF0, 0x80, 0xF0, 0x90, 0xF0, // 6
+    0xF0, 0x10, 0x20, 0x40, 0x40, // 7
+    0xF0, 0x90, 0xF0, 0x90, 0xF0, // 8
+    0xF0, 0x90, 0xF0, 0x10, 0xF0, // 9
+    0xF0, 0x90, 0xF0, 0x90, 0x90, // A
+    0xE0, 0x90, 0xE0, 0x90, 0xE0, // B
+    0xF0, 0x80, 0x80, 0x80, 0xF0, // C
+    0xE0, 0x90, 0x90, 0x90, 0xE0, // D
+    0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
+    0xF0, 0x80, 0xF0, 0x80, 0x80, // F
+];
+
 struct Chip8 {
     current_opcode: u16,
     // Memory of the emulator
@@ -25,6 +44,12 @@ struct Chip8 {
 }
 
 impl Chip8 {
+    fn load_font_set(&mut self) {
+        for i in 0..80 {
+            self.memory[i] = font_set[i];
+        }
+    }
+
     fn setup_graphics(&self) {
 
     }
@@ -40,7 +65,12 @@ impl Chip8 {
     fn emulate_cycle(&mut self) {
         let pc = self.program_counter as usize;
 
-        let current_opcode: u16 = (self.memory[pc] as u16) << 8 | (self.memory[pc + 1] as u16);
+        self.current_opcode = (self.memory[pc] as u16) << 8 | (self.memory[pc + 1] as u16);
+
+        // TODO
+        match self.current_opcode & 0xf000 {
+         _ => println!("Opcode not implemented: {:X}", self.current_opcode)
+        }
 
         if self.delay_timer > 0 {
             self.delay_timer = self.delay_timer - 1;
@@ -87,10 +117,11 @@ fn main() {
         keys: [0; 16]
     };
 
+    chip8.load_font_set();
+
     chip8.setup_graphics();
 
     chip8.setup_input();
-
 
     chip8.load_game();
 
