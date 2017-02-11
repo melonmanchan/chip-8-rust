@@ -1,3 +1,6 @@
+use std::io::Read;
+use std::fs::File;
+
 const FONT_SET: [u8; 80] = [
     0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
     0x20, 0x60, 0x20, 0x20, 0x70, // 1
@@ -46,7 +49,7 @@ struct Chip8 {
 impl Chip8 {
     fn load_font_set(&mut self) {
         for i in 0..80 {
-            self.memory[i] = font_set[i];
+            self.memory[i] = FONT_SET[i];
         }
     }
 
@@ -58,8 +61,14 @@ impl Chip8 {
 
     }
 
-    fn load_game(&self) {
+    fn load_game(&mut self, game_path: String) {
+        let mut file = File::open(&game_path).unwrap();
+        let mut rom : Vec<u8> = Vec::new();
+        file.read_to_end(&mut rom).unwrap();
 
+        for i in 0..rom.len() {
+            self.memory[0x200 + i] = rom[i];
+        }
     }
 
     fn emulate_cycle(&mut self) {
@@ -69,7 +78,23 @@ impl Chip8 {
 
         // TODO
         match self.current_opcode & 0xf000 {
-         _ => println!("Opcode not implemented: {:X}", self.current_opcode)
+            0x000 => self.op_0xxx(),
+            0x100 => self.op_1xxx(),
+            0x200 => self.op_2xxx(),
+            0x300 => self.op_3xxx(),
+            0x400 => self.op_4xxx(),
+            0x500 => self.op_5xxx(),
+            0x600 => self.op_6xxx(),
+            0x700 => self.op_7xxx(),
+            0x800 => self.op_8xxx(),
+            0x900 => self.op_9xxx(),
+            0xA00 => self.op_Axxx(),
+            0xB00 => self.op_Bxxx(),
+            0xC00 => self.op_Cxxx(),
+            0xD00 => self.op_Dxxx(),
+            0xE00 => self.op_Exxx(),
+            0xF00 => self.op_Fxxx(),
+            _ => println!("Opcode not implemented: {:X}", self.current_opcode)
         }
 
         if self.delay_timer > 0 {
@@ -85,11 +110,75 @@ impl Chip8 {
         }
     }
 
-    fn draw_graphics(&self) {
+    fn draw_graphics(&mut self) {
 
     }
 
-    fn set_key_state(&self) {
+    fn set_key_state(&mut self) {
+
+    }
+
+    fn op_0xxx(&mut self) {
+
+    }
+
+    fn op_1xxx(&mut self) {
+
+    }
+
+    fn op_2xxx(&mut self) {
+
+    }
+
+    fn op_3xxx(&mut self) {
+
+    }
+
+    fn op_4xxx(&mut self) {
+
+    }
+
+    fn op_5xxx(&mut self) {
+
+    }
+
+    fn op_6xxx(&mut self) {
+
+    }
+
+    fn op_7xxx(&mut self) {
+
+    }
+
+    fn op_8xxx(&mut self) {
+
+    }
+
+    fn op_9xxx(&mut self) {
+
+    }
+
+    fn op_Axxx(&mut self) {
+
+    }
+
+    fn op_Bxxx(&mut self) {
+
+    }
+
+    fn op_Cxxx(&mut self) {
+
+    }
+
+    fn op_Dxxx(&mut self) {
+
+    }
+
+    fn op_Exxx(&mut self) {
+
+    }
+
+    fn op_Fxxx(&mut self) {
 
     }
 }
@@ -123,7 +212,7 @@ fn main() {
 
     chip8.setup_input();
 
-    chip8.load_game();
+    chip8.load_game(String::from("../../games/PONG"));
 
     loop {
         chip8.emulate_cycle();
